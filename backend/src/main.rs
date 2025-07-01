@@ -3,10 +3,20 @@ use actix_cors::Cors;
 use actix_multipart::Multipart;
 use futures_util::StreamExt as _;
 use std::io::Write;
+use serde::Serialize;//new
+
+//new
+#[derive(Serialize)]
+struct UploadResponse {
+    message: String,
+    hash: Option<String>,
+}
+
 
 #[post("/upload")]
 async fn upload(mut payload: Multipart) -> impl Responder {
-    println!("⏺️ New upload request");
+    println!("⏺ New upload request");
+    let mut file_hash: Option<String> = None;//new
 
     while let Some(field) = payload.next().await {
         let mut field = field.unwrap();
@@ -27,24 +37,31 @@ async fn upload(mut payload: Multipart) -> impl Responder {
         if name == "file" && filename != "no-file" {
             std::fs::create_dir_all("uploads").unwrap();
             let mut f = std::fs::File::create(format!("uploads/{}", filename)).unwrap();
-           use sha2::{Sha256, Digest};
-use hex;
+            use sha2::{Sha256, Digest};
+            use hex;
 
-f.write_all(&data).unwrap();
+            f.write_all(&data).unwrap();
 
-// Hash the uploaded file content
-let mut hasher = Sha256::new();
-hasher.update(&data);
-let hash = hasher.finalize();
-let hash_hex = hex::encode(hash);
+            // Hash the uploaded file content
+            let mut hasher = Sha256::new();
+            hasher.update(&data);
+            let hash = hasher.finalize();
+            let hash_hex = hex::encode(hash);
+            file_hash = Some(hash_hex.clone());//new
 
-println!("✅ Saved file: uploads/{}", filename);
-println!("🔐 SHA-256 Hash (ownership ID): {}", hash_hex);
+            println!("✅ Saved file: uploads/{}", filename);
+            println!("🔐 SHA-256 Hash (ownership ID): {}", hash_hex);
 
         }
     }
 
-    HttpResponse::Ok().body("File uploaded successfully")
+    // HttpResponse::Ok().body("File uploaded successfully")//old
+    //new
+    HttpResponse::Ok().json(UploadResponse {
+    message: "File uploaded successfully".to_string(),
+    hash: file_hash,
+    })
+
 }
 
 #[actix_web::main]

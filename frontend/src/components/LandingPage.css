@@ -1,0 +1,186 @@
+.landing-container {
+  font-family: 'Poppins', sans-serif;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+  color: #222;
+}
+
+.hero {
+  background: linear-gradient(135deg, #6c5ce7, #00b894);
+  padding: 100px 20px;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 20px;
+  margin: 30px auto;
+  max-width: 95%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease-in-out;
+}
+/* 🌟 Only the text gets gradient shine */
+.shine-text {
+  background: linear-gradient(90deg, #89f7fe, #66a6ff, #c3cfe2);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 10s ease-in-out infinite;
+}
+
+
+.hero h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+
+@keyframes shine {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 300%;
+  }
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #ddd;
+  max-width: 720px;
+  margin: 0 auto 30px auto;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.hero-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  animation: float 2.5s ease-in-out infinite;
+}
+
+.hero-btn:hover {
+  animation: bounce 0.4s ease;
+}
+
+.hero-btn:active {
+  transform: scale(0.95);
+}
+
+@keyframes bounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.1); }
+  60%  { transform: scale(0.97); }
+  80%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes float {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+
+.benefits,
+.examples,
+.team-section,
+.partners,
+.testimonials,
+.how-it-works {
+  margin: 3rem 0;
+}
+
+.benefits ul {
+  list-style-type: disc;
+  padding-left: 2rem;
+  font-size: 1rem;
+}
+
+.steps {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.step {
+  flex: 1;
+  min-width: 220px;
+  background-color: #f4f4f4;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.cards {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.cards div {
+  flex: 1;
+  min-width: 200px;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+.team-image,
+.partner-logos {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+.testi {
+  background-color: #fefefe;
+  padding: 1rem 1.5rem;
+  margin: 1rem auto;
+  border-left: 4px solid #0077ff;
+  max-width: 700px;
+  border-radius: 8px;
+}
+
+.testi span {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.landing-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  border-top: 1px solid #ddd;
+  padding: 1.5rem 0;
+}
+
+/* ✅ ONLY NEW ADDITION → Keep bulb icon static yellow */
+.bulb {
+  color: #facc15; /* soft yellow bulb */
+  font-size: 2.6rem;
+  vertical-align: middle;
+}

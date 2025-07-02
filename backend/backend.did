@@ -1,0 +1,36 @@
+type UploadRequest = record {
+  title : text;
+  description : text;
+  file_data : blob;
+  filename : text;
+};
+
+type UploadResponse = record {
+  message : text;
+  hash : opt text;
+};
+
+type StoredFile = record {
+  title : text;
+  description : text;
+  filename : text;
+  data : blob;
+  hash : text;
+  timestamp : nat64;
+};
+
+type FileInfo = record {
+  title : text;
+  description : text;
+  filename : text;
+  hash : text;
+  timestamp : nat64;
+  size : nat64;
+};
+
+service : {
+  upload_file : (UploadRequest) -> (UploadResponse);
+  get_file_by_hash : (text) -> (opt StoredFile) query;
+  get_file_info_by_hash : (text) -> (opt FileInfo) query;
+  list_all_files : () -> (vec FileInfo) query;
+}

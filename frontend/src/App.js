@@ -6,33 +6,55 @@ import Navbar from './components/Navbar';
 import Login from './components/Login/Login';
 import LandingPage from './components/LandingPage';
 import { AuthClient } from '@dfinity/auth-client';
+import { initActor } from './services/canisterService';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function App() {
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isActorInitialized, setIsActorInitialized] = useState(false);
 
-  // ✅ Initialize AOS and check authentication inside useEffect
+  // ✅ Initialize AOS, check authentication, and initialize actor inside useEffect
   useEffect(() => {
     AOS.init({ duration: 1000 });
 
-    const checkAuth = async () => {
-      const client = await AuthClient.create();
-      const result = await client.isAuthenticated();
-      setIsAuthenticated(result);
-      setIsAuthChecked(true);
+    const initApp = async () => {
+      try {
+        // Initialize actor first
+        await initActor();
+        setIsActorInitialized(true);
+        
+        // Then check authentication
+        const client = await AuthClient.create();
+        const result = await client.isAuthenticated();
+        setIsAuthenticated(result);
+        setIsAuthChecked(true);
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+        setIsAuthChecked(true); // Still allow app to continue
+      }
     };
 
-    checkAuth();
+    initApp();
 
     // ✅ Re-check when window regains focus
+    const checkAuth = async () => {
+      try {
+        const client = await AuthClient.create();
+        const result = await client.isAuthenticated();
+        setIsAuthenticated(result);
+      } catch (error) {
+        console.error('Failed to check auth:', error);
+      }
+    };
+
     window.addEventListener("focus", checkAuth);
     return () => window.removeEventListener("focus", checkAuth);
   }, []);
 
-  if (!isAuthChecked) {
-    return <p>🔄 Checking authentication...</p>;
+  if (!isAuthChecked || !isActorInitialized) {
+    return <p>🔄 Initializing application...</p>;
   }
 
   return (

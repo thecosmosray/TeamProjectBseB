@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './UploadForm.css';
 import { useNavigate } from 'react-router-dom';
+import { uploadFile } from '../services/canisterService';
 
 const UploadForm = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,21 +19,17 @@ const UploadForm = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('file', file); // field name must be "file" (backend expects it)
+    setIsUploading(true);
+    setStatus('🔄 Uploading to canister...');
 
     try {
-      console.log('Uploading:', { title, description, file });
-      const response = await fetch('http://localhost:8080/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        alert(`✅ Upload successful!\nOwnership ID: ${result.hash}`);
+      console.log('Uploading to canister:', { title, description, file: file.name });
+      
+      const result = await uploadFile(title, description, file);
+      
+      if (result.hash && result.hash.length > 0) {
+        const hash = result.hash[0]; // Extract from Optional
+        alert(`✅ Upload successful!\nOwnership ID: ${hash}`);
         setStatus('✅ Upload successful!');
         setTitle('');
         setDescription('');
@@ -41,11 +39,13 @@ const UploadForm = () => {
           navigate('/'); // back to landing page
         }, 2000);
       } else {
-        setStatus('❌ Upload failed. Please try again.');
+        setStatus('❌ Upload failed: No hash returned');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setStatus('❌ Upload failed. Please try again.');
+      setStatus(`❌ Upload failed: ${error.message}`);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -59,19 +59,24 @@ const UploadForm = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
+          disabled={isUploading}
         />
         <textarea
           placeholder="Enter Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
+          disabled={isUploading}
         />
         <input
           type="file"
           onChange={(e) => setFile(e.target.files[0])}
           required
+          disabled={isUploading}
         />
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={isUploading}>
+          {isUploading ? '🔄 Uploading...' : 'Upload'}
+        </button>
       </form>
 
       {file && <p>📎 Selected file: {file.name}</p>}

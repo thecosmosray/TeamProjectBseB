@@ -1,19 +1,19 @@
 {
-  "replica_rev": "91bf38ff3cb927cb94027d9da513cd15f91a5b04",
+  "replica_rev": "044cfd5147fc97d7e5a214966941b6580c325d72",
   "type": "replica",
   "config": {
     "http_handler": {
       "port": null,
-      "write_port_to": "/workspace/.dfx/network/local/replica-configuration/replica-1.port"
+      "write_port_to": "/home/sudopuru/TeamProjectBseB/.dfx/network/local/replica-configuration/replica-1.port"
     },
     "state_manager": {
-      "state_root": "/workspace/.dfx/network/local/state/replicated_state"
+      "state_root": "/home/sudopuru/TeamProjectBseB/.dfx/network/local/state/replicated_state"
     },
     "crypto": {
-      "crypto_root": "/workspace/.dfx/network/local/state/crypto_store"
+      "crypto_root": "/home/sudopuru/TeamProjectBseB/.dfx/network/local/state/crypto_store"
     },
     "artifact_pool": {
-      "consensus_pool_path": "/workspace/.dfx/network/local/state/consensus_pool"
+      "consensus_pool_path": "/home/sudopuru/TeamProjectBseB/.dfx/network/local/state/consensus_pool"
     },
     "subnet_type": "system",
     "btc_adapter": {
@@ -22,7 +22,7 @@
     },
     "canister_http_adapter": {
       "enabled": true,
-      "socket_path": "/tmp/ic-https-outcalls-adapter-socket.3770.1751476923"
+      "socket_path": "/tmp/ic-https-outcalls-adapter-socket.73355.1751479530"
     },
     "log_level": "error",
     "artificial_delay": 600,

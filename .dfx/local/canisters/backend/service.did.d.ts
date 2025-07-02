@@ -1,5 +1,6 @@
 import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 
 export interface FileInfo {
   'title' : string,
@@ -30,3 +31,5 @@ export interface _SERVICE {
   'list_all_files' : ActorMethod<[], Array<FileInfo>>,
   'upload_file' : ActorMethod<[UploadRequest], UploadResponse>,
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];

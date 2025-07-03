@@ -29,9 +29,8 @@ const Login = () => {
     if (!authClient) return;
 
     try {
-      const identityProvider = IS_LOCAL 
-        ? `http://127.0.0.1:4943/?canisterId=${II_CANISTER_ID}`
-        : 'https://identity.ic0.app';
+      const identityProvider = 'https://identity.ic0.app';
+
 
       const derivationOrigin = IS_LOCAL 
         ? `http://127.0.0.1:4943/?canisterId=${FRONTEND_CANISTER_ID}`

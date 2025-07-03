@@ -8,6 +8,9 @@ const Login = () => {
   const [authClient, setAuthClient] = useState(null);
   const navigate = useNavigate();
 
+  const FRONTEND_CANISTER_ID = process.env.REACT_APP_FRONTEND_CANISTER_ID || 'bd3sg-teaaa-aaaaa-qaaba-cai';
+  const IS_LOCAL = process.env.NODE_ENV !== 'production';
+
   useEffect(() => {
     AuthClient.create().then(async (client) => {
       setAuthClient(client);
@@ -22,7 +25,13 @@ const Login = () => {
     if (!authClient) return;
 
     await authClient.login({
-      identityProvider: 'https://identity.ic0.app/#authorize',
+      identityProvider: IS_LOCAL
+        ? `http://127.0.0.1:4943/?canisterId=${FRONTEND_CANISTER_ID}`
+        : `https://identity.ic0.app/#authorize?canisterId=${FRONTEND_CANISTER_ID}`,
+      derivationOrigin: IS_LOCAL
+        ? 'http://127.0.0.1:4943'
+        : `https://${FRONTEND_CANISTER_ID}.ic0.app`,
+      windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=500,left=100,top=100',
       onSuccess: async () => {
         window.location.href = '/upload'; // Hard redirect ensures App.js rechecks auth
       },

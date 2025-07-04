@@ -8,9 +8,10 @@ const Login = () => {
   const [authClient, setAuthClient] = useState(null);
   const navigate = useNavigate();
 
-  // Get the frontend canister ID
+  // Get the frontend canister ID and environment
   const FRONTEND_CANISTER_ID = process.env.REACT_APP_FRONTEND_CANISTER_ID || 'bd3sg-teaaa-aaaaa-qaaba-cai';
-  const IS_LOCAL = process.env.NODE_ENV !== 'production';
+  const DFX_NETWORK = process.env.REACT_APP_DFX_NETWORK || 'local';
+  const IS_LOCAL = DFX_NETWORK === 'local';
   
   // Internet Identity canister ID for local development
   const II_CANISTER_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
@@ -29,21 +30,21 @@ const Login = () => {
     if (!authClient) return;
 
     try {
-      // For local development, use different configuration
-      const loginConfig = IS_LOCAL ? {
-        // Local development - use default derivation (no custom derivation origin)
+      // Configure login based on environment
+      let loginConfig = {
         identityProvider: 'https://identity.ic0.app',
-        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
-      } : {
-        // Production - use custom derivation origin
-        identityProvider: 'https://identity.ic0.app',
-        derivationOrigin: `https://${FRONTEND_CANISTER_ID}.ic0.app`,
         windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
       };
 
+      // ONLY add derivation origin for production (ic network)
+      if (!IS_LOCAL && DFX_NETWORK === 'ic') {
+        loginConfig.derivationOrigin = `https://${FRONTEND_CANISTER_ID}.ic0.app`;
+      }
+
       console.log('🔐 Starting login with:', {
         isLocal: IS_LOCAL,
-        config: loginConfig,
+        dfxNetwork: DFX_NETWORK,
+        hasDerivationOrigin: !!loginConfig.derivationOrigin,
         frontendCanisterId: FRONTEND_CANISTER_ID
       });
 
@@ -88,7 +89,9 @@ const Login = () => {
           <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
             <p><strong>Debug Info:</strong></p>
             <p>Frontend Canister: {FRONTEND_CANISTER_ID}</p>
-            <p>Environment: {process.env.NODE_ENV}</p>
+            <p>DFX Network: {DFX_NETWORK}</p>
+            <p>Is Local: {IS_LOCAL ? 'Yes' : 'No'}</p>
+            <p>NODE_ENV: {process.env.NODE_ENV}</p>
           </div>
         )}
       </div>

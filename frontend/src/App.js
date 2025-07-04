@@ -21,17 +21,25 @@ function App() {
 
     const initApp = async () => {
       try {
+        console.log('🚀 Starting app initialization...');
+        console.log('Environment variables:');
+        console.log('REACT_APP_BACKEND_CANISTER_ID:', process.env.REACT_APP_BACKEND_CANISTER_ID);
+        console.log('REACT_APP_DFX_NETWORK:', process.env.REACT_APP_DFX_NETWORK);
+        console.log('NODE_ENV:', process.env.NODE_ENV);
+        
         // Initialize actor first
         await initActor();
         setIsActorInitialized(true);
+        console.log('✅ Actor initialized successfully');
         
         // Then check authentication
         const client = await AuthClient.create();
         const result = await client.isAuthenticated();
         setIsAuthenticated(result);
         setIsAuthChecked(true);
+        console.log('✅ Authentication check completed');
       } catch (error) {
-        console.error('Failed to initialize app:', error);
+        console.error('❌ Failed to initialize app:', error);
         setIsAuthChecked(true); // Still allow app to continue
       }
     };

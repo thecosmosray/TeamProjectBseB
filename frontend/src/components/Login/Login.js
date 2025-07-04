@@ -8,9 +8,10 @@ const Login = () => {
   const [authClient, setAuthClient] = useState(null);
   const navigate = useNavigate();
 
-  // Get the frontend canister ID
+  // Get the frontend canister ID and environment
   const FRONTEND_CANISTER_ID = process.env.REACT_APP_FRONTEND_CANISTER_ID || 'bd3sg-teaaa-aaaaa-qaaba-cai';
-  const IS_LOCAL = process.env.NODE_ENV !== 'production';
+  const DFX_NETWORK = process.env.REACT_APP_DFX_NETWORK || 'local';
+  const IS_LOCAL = DFX_NETWORK === 'local';
   
   // Internet Identity canister ID for local development
   const II_CANISTER_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
@@ -29,26 +30,28 @@ const Login = () => {
     if (!authClient) return;
 
     try {
-      const identityProvider = 'https://identity.ic0.app';
+      // Configure login based on environment
+      let loginConfig = {
+        identityProvider: 'https://identity.ic0.app',
+        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
+      };
 
-
-      const derivationOrigin = IS_LOCAL 
-        ? `http://127.0.0.1:4943/?canisterId=${FRONTEND_CANISTER_ID}`
-        : `https://${FRONTEND_CANISTER_ID}.ic0.app`;
+      // ONLY add derivation origin for production (ic network)
+      if (!IS_LOCAL && DFX_NETWORK === 'ic') {
+        loginConfig.derivationOrigin = `https://${FRONTEND_CANISTER_ID}.ic0.app`;
+      }
 
       console.log('🔐 Starting login with:', {
-        identityProvider,
-        derivationOrigin,
+        isLocal: IS_LOCAL,
+        dfxNetwork: DFX_NETWORK,
+        hasDerivationOrigin: !!loginConfig.derivationOrigin,
         frontendCanisterId: FRONTEND_CANISTER_ID
       });
 
       await authClient.login({
-        identityProvider,
-        derivationOrigin,
-        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
+        ...loginConfig,
         onSuccess: async () => {
           console.log('✅ Login successful! Redirecting to upload page...');
-          // Use React Router navigation instead of window.location
           navigate('/upload', { replace: true });
         },
         onError: (err) => {
@@ -86,7 +89,9 @@ const Login = () => {
           <div style={{ marginTop: '20px', fontSize: '12px', color: '#666' }}>
             <p><strong>Debug Info:</strong></p>
             <p>Frontend Canister: {FRONTEND_CANISTER_ID}</p>
-            <p>Environment: {process.env.NODE_ENV}</p>
+            <p>DFX Network: {DFX_NETWORK}</p>
+            <p>Is Local: {IS_LOCAL ? 'Yes' : 'No'}</p>
+            <p>NODE_ENV: {process.env.NODE_ENV}</p>
           </div>
         )}
       </div>

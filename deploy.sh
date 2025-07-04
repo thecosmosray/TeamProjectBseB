@@ -24,8 +24,21 @@ echo "✅ Backend canister deployed with ID: $BACKEND_CANISTER_ID"
 # Build frontend
 echo "🔄 Building React frontend..."
 cd frontend
+
+# Create/update .env file with current canister IDs
+echo "📝 Creating .env file with canister IDs..."
+cat > .env << EOF
+REACT_APP_FRONTEND_CANISTER_ID=$(dfx canister id frontend 2>/dev/null || echo "bd3sg-teaaa-aaaaa-qaaba-cai")
+REACT_APP_BACKEND_CANISTER_ID=$BACKEND_CANISTER_ID
+REACT_APP_DFX_NETWORK=local
+REACT_APP_II_CANISTER_ID=rdmx6-jaaaa-aaaaa-aaadq-cai
+EOF
+
+echo "✅ Environment file created:"
+cat .env
+
 npm install
-REACT_APP_BACKEND_CANISTER_ID=$BACKEND_CANISTER_ID npm run build
+npm run build
 cd ..
 
 # Deploy frontend canister

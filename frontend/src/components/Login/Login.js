@@ -29,26 +29,28 @@ const Login = () => {
     if (!authClient) return;
 
     try {
-      const identityProvider = 'https://identity.ic0.app';
-
-
-      const derivationOrigin = IS_LOCAL 
-        ? `http://127.0.0.1:4943/?canisterId=${FRONTEND_CANISTER_ID}`
-        : `https://${FRONTEND_CANISTER_ID}.ic0.app`;
+      // For local development, use different configuration
+      const loginConfig = IS_LOCAL ? {
+        // Local development - use default derivation (no custom derivation origin)
+        identityProvider: 'https://identity.ic0.app',
+        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
+      } : {
+        // Production - use custom derivation origin
+        identityProvider: 'https://identity.ic0.app',
+        derivationOrigin: `https://${FRONTEND_CANISTER_ID}.ic0.app`,
+        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
+      };
 
       console.log('🔐 Starting login with:', {
-        identityProvider,
-        derivationOrigin,
+        isLocal: IS_LOCAL,
+        config: loginConfig,
         frontendCanisterId: FRONTEND_CANISTER_ID
       });
 
       await authClient.login({
-        identityProvider,
-        derivationOrigin,
-        windowOpenerFeatures: 'toolbar=0,location=0,menubar=0,width=500,height=600,left=100,top=100',
+        ...loginConfig,
         onSuccess: async () => {
           console.log('✅ Login successful! Redirecting to upload page...');
-          // Use React Router navigation instead of window.location
           navigate('/upload', { replace: true });
         },
         onError: (err) => {
